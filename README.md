@@ -1,7 +1,3 @@
----
-
-Website Pengingat Shalat
-
 Repositori ini berisi website sederhana untuk mengingatkan pentingnya shalat, menyediakan Dashboard Admin dan Dashboard User, serta fitur jadwal shalat real-time menggunakan API Aladhan.
 
 Demo
@@ -123,6 +119,3 @@ Pastikan index.html berada di root (atau folder docs sesuai pengaturan) dan peng
 Lisensi
 
 Bebas digunakan untuk pembelajaran atau pengembangan. Jika ada penambahan fitur, mohon disesuaikan dengan kebijakan masing-masing.
-
-
----
