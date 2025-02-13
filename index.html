@@ -578,4 +578,63 @@
         reader.onload = function(e) {
           const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
           localStorage.setItem("profilePic_" + loggedUser.username, e.target.result);
-          document.getElementById("userProfilePicPrevi
+          document.getElementById("userProfilePicPreview").src = e.target.result;
+          updateUserProfile();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // Upload foto profil admin
+    function uploadAdminProfilePic() {
+      const fileInput = document.getElementById("adminProfilePicUpload");
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+          localStorage.setItem("profilePic_" + loggedUser.username, e.target.result);
+          document.getElementById("adminProfilePicPreview").src = e.target.result;
+          updateAdminProfile();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // --- Tambahkan logika untuk mengambil jadwal sholat real-time ---
+    async function fetchPrayerTimes() {
+      const cityInput = document.getElementById('cityInput');
+      const city = cityInput.value.trim() || "Jakarta"; // default: Jakarta
+      // Gunakan Aladhan API (https://aladhan.com/prayer-times-api)
+      // Method 2 = ISNA, 5 = Makkah, dll.
+      const url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=Indonesia&method=2`;
+
+      const prayerTimesDiv = document.getElementById('prayerTimes');
+      prayerTimesDiv.innerHTML = "Memuat jadwal sholat...";
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if(data.code === 200) {
+          const timings = data.data.timings;
+          /* Contoh data: 
+             Fajr, Sunrise, Dhuhr, Asr, Sunset, Maghrib, Isha, Imsak, Midnight 
+          */
+          let html = "<ul>";
+          html += `<li>Subuh: ${timings.Fajr}</li>`;
+          html += `<li>Dzuhur: ${timings.Dhuhr}</li>`;
+          html += `<li>Ashar: ${timings.Asr}</li>`;
+          html += `<li>Maghrib: ${timings.Maghrib}</li>`;
+          html += `<li>Isya: ${timings.Isha}</li>`;
+          html += "</ul>";
+          prayerTimesDiv.innerHTML = html;
+        } else {
+          prayerTimesDiv.innerHTML = "Gagal memuat jadwal sholat. Pastikan kota benar.";
+        }
+      } catch (error) {
+        console.error(error);
+        prayerTimesDiv.innerHTML = "Terjadi kesalahan saat memuat jadwal sholat.";
+      }
+    }
+  </script>
+</body>
+</html>
