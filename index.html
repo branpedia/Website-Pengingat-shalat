@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Pentingnya Sholat & Dashboard</title>
+  <style>
+    /* Reset dasar */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    /* Styling body */
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    /* Header */
+    header {
+      background: #35424a;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      margin-bottom: 10px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+    }
+    nav ul li {
+      margin: 0 10px;
+    }
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Main content */
+    main {
+      width: 80%;
+      margin: auto;
+      overflow: hidden;
+      margin-bottom: 60px; /* ruang untuk footer */
+    }
+    section {
+      margin-bottom: 20px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    /* Footer */
+    footer {
+      background: #35424a;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    /* Form & tombol */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background: #35424a;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #1c2b33;
+    }
+    /* Sembunyikan bagian tertentu secara default */
+    #adminSection, #userSection, #adminAuthSection, #userAuthSection {
+      display: none;
+    }
+    /* Auth form */
+    .authSection {
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    .authSection h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .authSection p {
+      text-align: center;
+    }
+    .logoutBtn {
+      float: right;
+      background: #b22222;
+      margin-bottom: 10px;
+    }
+    /* Animasi fadeIn untuk info profil */
+    .profile-info {
+      animation: fadeIn 2s ease-in-out;
+      font-size: 16px;
+      margin-top: 10px;
+      color: #555;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    /* .typewriter untuk teks agar wrap di layar sempit */
+    .typewriter {
+      overflow: hidden;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      margin: 0 auto;
+      letter-spacing: .15em;
+      max-width: 100%;
+    }
+    /* Styling foto profil */
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ccc;
+      display: block;
+      margin: 10px auto;
+      transition: border-color 0.3s ease;
+    }
+    .profile-pic:hover {
+      border-color: #35424a;
+    }
+    /* Jadwal Sholat Container */
+    #prayerScheduleContainer {
+      margin-top: 20px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    #prayerScheduleContainer h3 {
+      margin-bottom: 10px;
+    }
+    #prayerTimes ul {
+      list-style: none;
+      padding: 0;
+    }
+    #prayerTimes li {
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+    #prayerTimes li:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>Pentingnya Sholat</h1>
+    <nav>
+      <ul>
+        <li><a onclick="showSection('homeSection')">Beranda</a></li>
+        <li><a onclick="showSection('adminSection')">Dashboard Admin</a></li>
+        <li><a onclick="showSection('userSection')">Dashboard User</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- Beranda -->
+    <section id="homeSection">
+      <h2>Mengapa Sholat Itu Penting?</h2>
+      <p id="dynamicText" class="typewriter"></p>
+      <section id="benefits">
+        <h2>Manfaat Sholat</h2>
+        <ul>
+          <li>Memperkuat hubungan dengan Sang Pencipta</li>
+          <li>Menjaga disiplin dan rutinitas</li>
+          <li>Menenangkan pikiran dan hati</li>
+        </ul>
+      </section>
+      <section id="reportSection">
+        <h2>Kirim Laporan Pengguna</h2>
+        <input type="text" id="reportName" placeholder="Nama">
+        <input type="email" id="reportEmail" placeholder="Email">
+        <textarea id="reportMessage" rows="5" placeholder="Tulis laporan Anda di sini..."></textarea>
+        <button onclick="submitReport()">Kirim Laporan</button>
+        <div id="reportStatus"></div>
+      </section>
+    </section>
+    
+    <!-- Form Otentikasi Admin -->
+    <section id="adminAuthSection" class="authSection">
+      <div id="adminLoginForm">
+        <h2>Login Admin</h2>
+        <input type="text" id="adminLoginUsername" placeholder="Username">
+        <input type="password" id="adminLoginPassword" placeholder="Password">
+        <button onclick="loginAdmin()">Login</button>
+        <div id="adminLoginStatus"></div>
+      </div>
+    </section>
+    
+    <!-- Dashboard Admin -->
+    <section id="adminSection">
+      <button class="logoutBtn" onclick="logout()">Logout</button>
+      <h2>Dashboard Admin</h2>
+      <p>Masukkan perubahan konten di bawah ini:</p>
+      <textarea id="adminText" rows="10" placeholder="Masukkan teks baru..."></textarea>
+      <br>
+      <button onclick="updateContent()">Update Konten</button>
+      <div id="adminOutput"></div>
+      <hr>
+      <div id="userReports">
+        <h3>Laporan Pengguna</h3>
+        <div id="reportsList"></div>
+      </div>
+      <hr>
+      <!-- Info akun admin -->
+      <div id="adminProfileInfo" class="profile-info"></div>
+      <!-- Upload Foto Profil Admin -->
+      <img id="adminProfilePicPreview" class="profile-pic" src="https://via.placeholder.com/150" alt="Profile Picture">
+      <input type="file" id="adminProfilePicUpload" accept="image/*">
+      <button onclick="uploadAdminProfilePic()">Upload Foto</button>
+    </section>
+    
+    <!-- Form Otentikasi User -->
+    <section id="userAuthSection" class="authSection">
+      <div id="userLoginForm">
+        <h2>Login User</h2>
+        <input type="text" id="userLoginUsername" placeholder="Username">
+        <input type="password" id="userLoginPassword" placeholder="Password">
+        <button onclick="loginUser()">Login</button>
+        <p>Belum punya akun? <a href="#" onclick="toggleUserAuthForms()">Daftar di sini</a></p>
+        <div id="userLoginStatus"></div>
+      </div>
+      <div id="userRegisterForm" style="display:none;">
+        <h2>Daftar User</h2>
+        <input type="text" id="registerUsername" placeholder="Username">
+        <input type="password" id="registerPassword" placeholder="Password">
+        <input type="password" id="registerConfirmPassword" placeholder="Konfirmasi Password">
+        <button onclick="registerUser()">Daftar</button>
+        <p>Sudah punya akun? <a href="#" onclick="toggleUserAuthForms()">Login di sini</a></p>
+        <div id="registerStatus"></div>
+      </div>
+    </section>
+    
+    <!-- Dashboard User -->
+    <section id="userSection">
+      <button class="logoutBtn" onclick="logout()">Logout</button>
+      <h2>Dashboard User</h2>
+      <p>Selamat datang, <span id="userNameDisplay"></span>!</p>
+      <p>Berikut adalah data akun Anda:</p>
+      <div id="userProfileInfo" class="profile-info"></div>
+      <!-- Upload Foto Profil User -->
+      <img id="userProfilePicPreview" class="profile-pic" src="https://via.placeholder.com/150" alt="Profile Picture">
+      <input type="file" id="userProfilePicUpload" accept="image/*">
+      <button onclick="uploadUserProfilePic()">Upload Foto</button>
+
+      <!-- Jadwal Sholat Real-time -->
+      <section id="prayerScheduleContainer">
+        <h3>Jadwal Sholat</h3>
+        <p>Masukkan nama kota (Indonesia):</p>
+        <input type="text" id="cityInput" placeholder="Contoh: Jakarta" style="padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:4px;">
+        <button onclick="fetchPrayerTimes()">Cek Jadwal</button>
+        <div id="prayerTimes" style="margin-top:15px;"></div>
+      </section>
+    </section>
+    
+  </main>
+  
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Website Pentingnya Sholat. All rights reserved.</p>
+  </footer>
+  
+  <script>
+    // Typewriter Effect
+    function typeWriterEffect() {
+      const dynamicTextElement = document.getElementById("dynamicText");
+      dynamicTextElement.innerHTML = "";
+      const text = "Sholat adalah kunci untuk mendekatkan diri kepada Sang Pencipta. Lakukan sholat lima waktu untuk mendapatkan ketenangan jiwa.";
+      let index = 0;
+      const speed = 80;
+      function typeWriter() {
+        if (index < text.length) {
+          dynamicTextElement.innerHTML += text.charAt(index);
+          index++;
+          setTimeout(typeWriter, speed);
+        } else {
+          setTimeout(() => {
+            dynamicTextElement.innerHTML = "";
+            index = 0;
+            typeWriter();
+          }, 2000);
+        }
+      }
+      typeWriter();
+    }
+    document.addEventListener("DOMContentLoaded", typeWriterEffect);
+    
+    // Cek Status Login
+    function isLoggedIn() {
+      return localStorage.getItem("loggedInUser") !== null;
+    }
+    
+    // Atur Tampilan Section
+    function showSection(sectionId) {
+      // Sembunyikan semua section
+      document.getElementById('homeSection').style.display = 'none';
+      document.getElementById('adminSection').style.display = 'none';
+      document.getElementById('userSection').style.display = 'none';
+      document.getElementById('adminAuthSection').style.display = 'none';
+      document.getElementById('userAuthSection').style.display = 'none';
+      
+      // Tampilkan section sesuai parameter
+      if(sectionId === 'adminSection') {
+        if(isLoggedIn()){
+          const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+          if(loggedUser.role === "admin"){
+            document.getElementById('adminSection').style.display = 'block';
+            updateReportsList();
+            updateAdminProfile();
+          } else {
+            alert("Akses ditolak. Anda login sebagai user biasa.");
+            showSection('homeSection');
+          }
+        } else {
+          document.getElementById('adminAuthSection').style.display = 'block';
+        }
+      } else if(sectionId === 'userSection') {
+        if(isLoggedIn()){
+          const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+          if(loggedUser.role === "user"){
+            document.getElementById('userSection').style.display = 'block';
+            updateUserDashboard();
+            updateUserProfile();
+          } else {
+            alert("Akses ditolak. Anda login sebagai admin.");
+            showSection('homeSection');
+          }
+        } else {
+          document.getElementById('userAuthSection').style.display = 'block';
+        }
+      } else {
+        document.getElementById(sectionId).style.display = 'block';
+      }
+    }
+    // Tampilkan halaman Beranda secara default
+    showSection('homeSection');
+    
+    // Update Konten Admin
+    function updateContent() {
+      const text = document.getElementById('adminText').value;
+      const output = document.getElementById('adminOutput');
+      output.innerHTML = "<h3>Preview Konten:</h3><p>" + text + "</p>";
+    }
+    
+    // Logika Laporan Pengguna
+    let reports = [];
+    if (localStorage.getItem("userReports")) {
+      reports = JSON.parse(localStorage.getItem("userReports"));
+    }
+    function submitReport() {
+      const name = document.getElementById('reportName').value.trim();
+      const email = document.getElementById('reportEmail').value.trim();
+      const message = document.getElementById('reportMessage').value.trim();
+      const statusDiv = document.getElementById('reportStatus');
+      
+      if (name === "" || email === "" || message === "") {
+        statusDiv.innerHTML = "<p style='color:red;'>Semua field harus diisi.</p>";
+        return;
+      }
+      
+      const report = {
+        name,
+        email,
+        message,
+        timestamp: new Date().toLocaleString()
+      };
+      
+      reports.push(report);
+      localStorage.setItem("userReports", JSON.stringify(reports));
+      statusDiv.innerHTML = "<p style='color:green;'>Laporan berhasil dikirim. Terima kasih!</p>";
+      
+      document.getElementById('reportName').value = "";
+      document.getElementById('reportEmail').value = "";
+      document.getElementById('reportMessage').value = "";
+      
+      const whatsappMessage = 
+        "Laporan Pengguna:%0A" +
+        "Nama: " + report.name + "%0A" +
+        "Email: " + report.email + "%0A" +
+        "Pesan: " + report.message + "%0A" +
+        "Waktu: " + report.timestamp;
+      const whatsappURL = "https://wa.me/6288218215241?text=" + whatsappMessage;
+      window.open(whatsappURL, "_blank");
+    }
+    function updateReportsList() {
+      const reportsList = document.getElementById('reportsList');
+      if (reports.length === 0) {
+        reportsList.innerHTML = "<p>Tidak ada laporan pengguna.</p>";
+        return;
+      }
+      let html = "<ul>";
+      reports.forEach(report => {
+        html += `
+          <li style="margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:5px;">
+            <strong>${report.name}</strong> (${report.email})<br>
+            <em>${report.timestamp}</em><br>
+            <p>${report.message}</p>
+          </li>
+        `;
+      });
+      html += "</ul>";
+      reportsList.innerHTML = html;
+    }
+    
+    // Dashboard User
+    function updateUserDashboard() {
+      const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+      document.getElementById('userNameDisplay').innerText = loggedUser.username;
+    }
+    
+    // Tampilkan data akun admin
+    function updateAdminProfile() {
+      const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+      const profileInfo = document.getElementById("adminProfileInfo");
+      profileInfo.innerHTML = `
+        <p><strong>Username:</strong> ${loggedUser.username}</p>
+        <p><strong>Password:</strong> ${loggedUser.password}</p>
+        <p><strong>Role:</strong> ${loggedUser.role}</p>
+      `;
+      const pic = localStorage.getItem("profilePic_" + loggedUser.username);
+      if (pic) {
+        document.getElementById("adminProfilePicPreview").src = pic;
+      }
+    }
+    
+    // Tampilkan data akun user
+    function updateUserProfile() {
+      const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+      const profileInfo = document.getElementById("userProfileInfo");
+      profileInfo.innerHTML = `
+        <p><strong>Username:</strong> ${loggedUser.username}</p>
+        <p><strong>Password:</strong> ${loggedUser.password}</p>
+        <p><strong>Role:</strong> ${loggedUser.role}</p>
+      `;
+      const pic = localStorage.getItem("profilePic_" + loggedUser.username);
+      if (pic) {
+        document.getElementById("userProfilePicPreview").src = pic;
+      }
+    }
+    
+    // Otentikasi Admin
+    function loginAdmin() {
+      const username = document.getElementById('adminLoginUsername').value.trim();
+      const password = document.getElementById('adminLoginPassword').value.trim();
+      const statusDiv = document.getElementById('adminLoginStatus');
+      
+      if (username === "" || password === "") {
+        statusDiv.innerHTML = "<p style='color:red;'>Semua field harus diisi.</p>";
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const validUser = users.find(user => 
+        user.username === username && user.password === password && user.role === "admin"
+      );
+      
+      if (validUser) {
+        localStorage.setItem("loggedInUser", JSON.stringify(validUser));
+        statusDiv.innerHTML = "<p style='color:green;'>Login berhasil.</p>";
+        showSection('adminSection');
+      } else {
+        statusDiv.innerHTML = "<p style='color:red;'>Username atau password salah.</p>";
+      }
+    }
+    
+    // Otentikasi User
+    function loginUser() {
+      const username = document.getElementById('userLoginUsername').value.trim();
+      const password = document.getElementById('userLoginPassword').value.trim();
+      const statusDiv = document.getElementById('userLoginStatus');
+      
+      if (username === "" || password === "") {
+        statusDiv.innerHTML = "<p style='color:red;'>Semua field harus diisi.</p>";
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const validUser = users.find(user => 
+        user.username === username && user.password === password && user.role === "user"
+      );
+      
+      if (validUser) {
+        localStorage.setItem("loggedInUser", JSON.stringify(validUser));
+        statusDiv.innerHTML = "<p style='color:green;'>Login berhasil.</p>";
+        showSection('userSection');
+      } else {
+        statusDiv.innerHTML = "<p style='color:red;'>Username atau password salah.</p>";
+      }
+    }
+    
+    // Toggle form login/daftar user
+    function toggleUserAuthForms() {
+      const loginForm = document.getElementById('userLoginForm');
+      const registerForm = document.getElementById('userRegisterForm');
+      if (loginForm.style.display === "none") {
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+      } else {
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+      }
+    }
+    
+    // Pendaftaran User
+    function registerUser() {
+      const username = document.getElementById('registerUsername').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const confirmPassword = document.getElementById('registerConfirmPassword').value.trim();
+      const statusDiv = document.getElementById('registerStatus');
+      
+      if (username === "" || password === "" || confirmPassword === "") {
+        statusDiv.innerHTML = "<p style='color:red;'>Semua field harus diisi.</p>";
+        return;
+      }
+      if (password !== confirmPassword) {
+        statusDiv.innerHTML = "<p style='color:red;'>Password dan konfirmasi tidak cocok.</p>";
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const userExists = users.some(user => user.username === username);
+      if (userExists){
+        statusDiv.innerHTML = "<p style='color:red;'>Username sudah terdaftar.</p>";
+        return;
+      }
+      
+      users.push({ username, password, role: "user" });
+      localStorage.setItem("users", JSON.stringify(users));
+      statusDiv.innerHTML = "<p style='color:green;'>Registrasi berhasil. Silakan login.</p>";
+      
+      document.getElementById('registerUsername').value = "";
+      document.getElementById('registerPassword').value = "";
+      document.getElementById('registerConfirmPassword').value = "";
+      setTimeout(toggleUserAuthForms, 1500);
+    }
+    
+    // Fungsi Logout
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      showSection('homeSection');
+    }
+    
+    // Upload foto profil user
+    function uploadUserProfilePic() {
+      const fileInput = document.getElementById("userProfilePicUpload");
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+          localStorage.setItem("profilePic_" + loggedUser.username, e.target.result);
+          document.getElementById("userProfilePicPrevi
